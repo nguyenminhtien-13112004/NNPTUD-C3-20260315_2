@@ -1,0 +1,148 @@
+{
+	"info": {
+		"_postman_id": "auth-collection-001",
+		"name": "NNPTUD-C3 Authentication API",
+		"description": "Collection để test các endpoint authentication: login và /me",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Lưu token vào biến collection để dùng cho request /me",
+							"if (pm.response.code === 200) {",
+							"    var token = pm.response.text().trim();",
+							"    // Lưu vào collection variable",
+							"    pm.collectionVariables.set(\"jwt_token\", token);",
+							"    // Cũng lưu vào environment nếu có",
+							"    if (pm.environment.get(\"jwt_token\") !== undefined) {",
+							"        pm.environment.set(\"jwt_token\", token);",
+							"    }",
+							"    console.log(\"Token đã được lưu:\", token.substring(0, 50) + \"...\");",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"your_username\",\n    \"password\": \"your_password\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/v1/auth/login",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"auth",
+						"login"
+					]
+				},
+				"description": "Endpoint để đăng nhập và nhận JWT token (RS256)"
+			},
+			"response": []
+		},
+		{
+			"name": "2. Get Current User (/me)",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text",
+						"description": "JWT token từ response của Login"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/v1/auth/me",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"auth",
+						"me"
+					]
+				},
+				"description": "Endpoint để lấy thông tin user hiện tại. Yêu cầu JWT token trong header Authorization."
+			},
+			"response": []
+		},
+		{
+			"name": "3. Change Password",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"oldPassword\": \"OldPass123!@#\",\n    \"newPassword\": \"NewPass123!@#\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/v1/auth/changepassword",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"auth",
+						"changepassword"
+					]
+				},
+				"description": "Endpoint để đổi mật khẩu. Yêu cầu đăng nhập và validation cho newPassword."
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:3000",
+			"type": "string"
+		},
+		{
+			"key": "jwt_token",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

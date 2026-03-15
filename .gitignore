@@ -57,5 +57,8 @@ typings/
 # dotenv environment variables file
 .env
 
+# RSA private key (JWT RS256) - không commit
+private.pem
+
 # next.js build output
 .next

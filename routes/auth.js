@@ -25,7 +25,12 @@ router.get('/me',CheckLogin,function(req,res,next){
     res.send(req.user)
 })
 
-router.post('/changepassword', CheckLogin, ChangePasswordValidator, validatedResult, async function(req, res, next) {
+// Chuẩn hóa body để hỗ trợ cả oldpassword/newpassword và oldPassword/newPassword
+router.post('/changepassword', CheckLogin, function(req, res, next) {
+    if (req.body.oldpassword !== undefined) req.body.oldPassword = req.body.oldPassword ?? req.body.oldpassword;
+    if (req.body.newpassword !== undefined) req.body.newPassword = req.body.newPassword ?? req.body.newpassword;
+    next();
+}, ChangePasswordValidator, validatedResult, async function(req, res, next) {
     let { oldPassword, newPassword } = req.body;
     if (!req.user || !req.user[0] || !req.user[0]._id) {
         res.status(403).send({ message: "User not found" });

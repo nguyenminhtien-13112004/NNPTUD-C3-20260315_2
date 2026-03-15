@@ -18,9 +18,25 @@
 
 **Lưu ý:** Collection đã có sẵn variables, bạn có thể dùng trực tiếp mà không cần tạo environment.
 
-## Bước 3: Test Login và chụp ảnh
+## Bước 3: Khởi động Server (QUAN TRỌNG!)
 
-### 3.1. Test Login
+**Trước khi test trong Postman, bạn PHẢI khởi động server:**
+
+1. Mở terminal/command prompt trong thư mục project
+2. **File .env đã được cấu hình sẵn với MongoDB Atlas URI**
+3. Chạy lệnh: `npm start`
+4. Đợi thấy message `"Connected to MongoDB"` trong console
+5. Server sẽ chạy tại: `http://localhost:3000`
+
+**Nếu gặp lỗi `ECONNREFUSED` trong Postman:**
+- Kiểm tra server có đang chạy không (check terminal)
+- Kiểm tra kết nối internet (vì dùng MongoDB Atlas)
+- Đảm bảo port 3000 không bị chiếm
+- Kiểm tra MongoDB Atlas URI trong file `.env` có đúng không
+
+## Bước 4: Test Login và chụp ảnh
+
+### 4.1. Test Login
 
 1. Chọn request **"1. Login"** trong collection
 2. Cập nhật body với username và password thực tế:
@@ -30,13 +46,13 @@
     "password": "your_actual_password"
 }
 ```
-3. Đảm bảo server đang chạy (`npm start`)
+3. **Đảm bảo server đang chạy** (đã khởi động ở Bước 3)
 4. Click **Send**
 5. **Chụp ảnh màn hình** hiển thị:
    - Request (method, URL, headers, body)
    - Response (status code, body với JWT token)
 
-### 3.2. Test /me
+### 4.2. Test /me
 
 1. Sau khi login thành công, token sẽ tự động được lưu vào biến `jwt_token`
 2. Chọn request **"2. Get Current User (/me)"**
@@ -46,7 +62,7 @@
    - Request (method, URL, headers với Authorization)
    - Response (status code, body với thông tin user)
 
-## Bước 4: Test Change Password (Tùy chọn)
+## Bước 5: Test Change Password (Tùy chọn)
 
 1. Chọn request **"3. Change Password"**
 2. Cập nhật body với oldPassword và newPassword:

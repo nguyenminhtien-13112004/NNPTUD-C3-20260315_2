@@ -1,3 +1,6 @@
+// Load environment variables
+require('dotenv').config();
+
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -27,12 +30,22 @@ app.use('/api/v1/categories', require('./routes/categories'));
 app.use('/api/v1/roles', require('./routes/roles'));
 app.use('/api/v1/auth', require('./routes/auth'));
 
-mongoose.connect('mongodb://localhost:27017/NNPTUD-C3');
+// Connect to MongoDB Atlas or local MongoDB
+const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/NNPTUD-C3';
+const dbTimeout = parseInt(process.env.DB_TIMEOUT_MS) || 5000;
+
+mongoose.connect(mongoUri, {
+  serverSelectionTimeoutMS: dbTimeout
+});
+
 mongoose.connection.on('connected',()=>{
-  console.log("connected");
+  console.log("Connected to MongoDB");
 })
 mongoose.connection.on('disconnected',()=>{
-  console.log("disconnected");
+  console.log("Disconnected from MongoDB");
+})
+mongoose.connection.on('error',(err)=>{
+  console.log("MongoDB connection error:", err);
 })
 
 

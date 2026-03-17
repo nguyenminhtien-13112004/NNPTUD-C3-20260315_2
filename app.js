@@ -35,8 +35,11 @@ app.use('/api/v1/inventories', require('./routes/inventories'));
 const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/NNPTUD-C3';
 const dbTimeout = parseInt(process.env.DB_TIMEOUT_MS) || 5000;
 
+// IMPORTANT: luôn catch connect() để tránh unhandled rejection làm crash app
 mongoose.connect(mongoUri, {
   serverSelectionTimeoutMS: dbTimeout
+}).catch((err) => {
+  console.log("MongoDB initial connection failed:", err.message);
 });
 
 mongoose.connection.on('connected',()=>{
